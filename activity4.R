@@ -59,4 +59,4 @@ for(i in 8-length(weather$AirTemp)){
 mayJune22 <- weather %>%
   filter(month(dateF > 5)| dateF < june2022 )
 
-
+#testets
