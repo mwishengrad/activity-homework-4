@@ -93,6 +93,10 @@ ggplot(mayJune21,
   geom_point()+
   geom_line()
 
+
+#Prompt 3
+#Discussed in class
+
 #No issues with buildup or accumulation on the sensor because
 #during daylight hours when solar radiation is expected there was 
 #never a time in which none was found.
@@ -101,10 +105,28 @@ ggplot(mayJune21,
 
 #Homework Questions
 
-#Question 1
+#QUESTION 1
       
+missingPrecip <- 0
 
+weather$qualityPrecip <- ifelse ((weather$AirTemp[i] > 0) & (abs(weather$XLevel[i]) < 2) & (abs(weather$YLevel[i]) < 2),
+                                 weather$Precip,
+                                 missingPrecip <- missingPrecip +1)
 
+#QUESTION 2
 
+for(i in 1:length(weather$BatVolt)){
+  weather$BatFlag <- ifelse (weather$BatVolt < 8.5,
+                             1,
+                             0)
+}
 
+#QUESTION 3
 
+unrealistic <- function(x){
+  weather$AirTemp > 40 | 
+    weather$AirTemp < -25 |
+    weather$SolRad > 1000
+}
+
+#QUESTION 4
