@@ -119,9 +119,7 @@ for(i in 1:length(weather$Precip)){
 
 #QUESTION 2
 
-weather$BatFlag <- ifelse(weather$BatVolt < 8.5,
-                             1,
-                             0)
+weather$BatFlag <- ifelse(weather$BatVolt < 8.5, 1, 0)
 
 #QUESTION 3
 
@@ -134,5 +132,19 @@ unrealistic <- function(x){
 
 unrealistic(weather)
 
-
 #QUESTION 4
+
+winter21 <- weather %>%
+  filter(month(weather$dateF) >= 1 & month(weather$dateF) <= 3 & 
+           year(weather$dateF) == 2021)
+
+ggplot(winter21,
+       aes(dateF, AirTemp))+
+  geom_line()+
+  xlab("Date")+
+  ylab("Temperature")+
+  theme_classic()
+
+#QUESTION 5
+
+
