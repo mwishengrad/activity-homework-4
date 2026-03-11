@@ -82,11 +82,9 @@ mayJune21 <- weather %>%
   filter((month(weather$dateF) == 5 | month(weather$dateF) == 6) & 
            (year(weather$dateF) == 2021))
 
-for (i in length(mayJune21)){
-  mayJune21$sensorIssue <- ifelse(((hour(mayJune21$dateF) > 6) & (hour(mayJune21$dateF) < 20) & (mayJune21$SolRad == 0)),
+mayJune21$sensorIssue <- ifelse(((hour(mayJune21$dateF) > 6) & (hour(mayJune21$dateF) < 20) & (mayJune21$SolRad == 0)),
                          TRUE,
                          FALSE)
-}
 
 ggplot(mayJune21,
        aes(dateF, sensorIssue))+
@@ -106,27 +104,35 @@ ggplot(mayJune21,
 #Homework Questions
 
 #QUESTION 1
-      
+
+weather$qualityPrecip <- ifelse (weather$AirTemp > 0 & abs(weather$XLevel) < 2 & abs(weather$YLevel) < 2,
+                                 weather$Precip,
+                                 NA)
+
 missingPrecip <- 0
 
-weather$qualityPrecip <- ifelse ((weather$AirTemp[i] > 0) & (abs(weather$XLevel[i]) < 2) & (abs(weather$YLevel[i]) < 2),
-                                 weather$Precip,
-                                 missingPrecip <- missingPrecip +1)
+for(i in 1:length(weather$Precip)){
+  ifelse(is.na(weather$Precip[i]),
+         missingPrecip <- missingPrecip +1,
+         missingPrecip <- missingPrecip)
+}
 
 #QUESTION 2
 
-for(i in 1:length(weather$BatVolt)){
-  weather$BatFlag <- ifelse (weather$BatVolt < 8.5,
+weather$BatFlag <- ifelse(weather$BatVolt < 8.5,
                              1,
                              0)
-}
 
 #QUESTION 3
 
 unrealistic <- function(x){
-  weather$AirTemp > 40 | 
-    weather$AirTemp < -25 |
-    weather$SolRad > 1000
+  x$bad <- ifelse(x$AirTemp > 40 | x$AirTemp< -25 | x$SolRad > 1000, TRUE,FALSE)
+  obs <- x %>%
+    filter(x$bad == TRUE)
+  obs
 }
+
+unrealistic(weather)
+
 
 #QUESTION 4
