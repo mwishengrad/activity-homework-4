@@ -147,4 +147,52 @@ ggplot(winter21,
 
 #QUESTION 5
 
+marchApril21 <- weather %>%
+  filter((month(weather$dateF) == 3 | month(weather$dateF) == 4) & 
+           (year(weather$dateF) == 2021))
 
+dailyMin <- marchApril21 %>%
+  group_by(doy = yday(dateF)) %>%
+  summarise(daysMinTemp = min(AirTemp))
+
+dailyMin$prevDaysMin = NA
+
+for(i in 1:((length(dailyMin$doy))-1)){
+  dailyMin$prevDaysMin[i+1] <- dailyMin$daysMinTemp[i]
+}
+
+marchApril21$doy <- yday(marchApril21$dateF)
+
+marchApril21 <- full_join(marchApril21, dailyMin, by="doy")
+
+marchApril21$checkPrecip <- NA
+
+# 35F ~~ 1.7C
+for(i in 1:length(marchApril21$checkPrecip)){
+  ifelse(marchApril21$daysMinTemp[i] >= 1.7 & marchApril21$prevDaysMin[i] >= 1.7,
+         marchApril21$checkPrecip[i] <- marchApril21$Precip[i],
+         marchApril21$checkPrecip[i] <- NA
+  )
+}  
+
+precipObs <- 0
+
+for(i in 1:length(marchApril21$checkPrecip)){
+  ifelse(is.na(marchApril21$checkPrecip[i]),
+         precipObs <- precipObs,
+         precipObs <- precipObs + 1)
+}
+
+#QUESTION 6
+
+#done previous in in-class work section
+
+timeIntCheck <- function(x,y){
+  intervals <- x[-length(x)] %--% x[-1]
+  interval_times <- int_length(intervals)
+  intervals[interval_times != y]
+}
+
+soilData$dateF <- ymd_hm(soilData$Timestamp)
+
+timeIntCheck(soilData$dateF, 3600)
